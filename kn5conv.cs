@@ -105,7 +105,7 @@ namespace kn5_converter
             {
                 input = Path.GetFullPath(input); //in case only filename is entered
 
-                string currentModel = MakeRelative(input, (Path.GetDirectoryName(input) + "\\"));
+                string currentModel = MakeRelative(input, (Path.GetDirectoryName(input) + "/"));
                 Console.WriteLine("Reading {0}", currentModel);
 
                 var theModel = readKN5(input);
@@ -129,7 +129,7 @@ namespace kn5_converter
             }
             else if (Directory.Exists(input))
             {
-                input = Path.GetFullPath(input + "\\");
+                input = Path.GetFullPath(input + "/");
                 string[] inputFiles = Directory.GetFiles(input, "*.kn5", recurse);
                 Console.WriteLine("Found {0} files.", inputFiles.Length);
 
@@ -189,7 +189,7 @@ namespace kn5_converter
                 if (magicNumber == "sc6969")
                 {
                     kn5Model newModel = new kn5Model();
-                    newModel.modelDir = Path.GetDirectoryName(kn5File) + "\\";
+                    newModel.modelDir = Path.GetDirectoryName(kn5File) + "/";
                     newModel.modelName = Path.GetFileNameWithoutExtension(kn5File);
 
                     newModel.version = binStream.ReadInt32();
@@ -205,14 +205,14 @@ namespace kn5_converter
                         int texSize = binStream.ReadInt32();
                         newModel.textures.Add(texName);
 
-                        if (File.Exists(newModel.modelDir + "texture\\" + texName))
+                        if (File.Exists(newModel.modelDir + "texture/" + texName))
                         {
                             binStream.BaseStream.Position += texSize;
                         }
                         else
                         {
                             byte[] texBuffer = binStream.ReadBytes(texSize);
-                            using (BinaryWriter texWriter = new BinaryWriter(File.Create(newModel.modelDir + "texture\\" + texName)))
+                            using (BinaryWriter texWriter = new BinaryWriter(File.Create(newModel.modelDir + "texture/" + texName)))
                             {
                                 texWriter.Write(texBuffer);
                             }
@@ -591,11 +591,11 @@ namespace kn5_converter
 //add function to search for textures and get relative path
                         if (srcMat.useDetail == 1.0f && srcMat.txDetail != null)
                         {
-                            sb.AppendFormat("map_Kd texture\\{0}\r\n", srcMat.txDetail);
-                            if (srcMat.txDiffuse != null) { sb.AppendFormat("map_Ks texture\\{0}\r\n", srcMat.txDiffuse); }
+                            sb.AppendFormat("map_Kd texture/{0}\r\n", srcMat.txDetail);
+                            if (srcMat.txDiffuse != null) { sb.AppendFormat("map_Ks texture/{0}\r\n", srcMat.txDiffuse); }
                         }
-                        else if (srcMat.txDiffuse != null) { sb.AppendFormat("map_Kd texture\\{0}\r\n", srcMat.txDiffuse); }
-                        if (srcMat.txNormal != null) { sb.AppendFormat("bump texture\\{0}\r\n", srcMat.txNormal); }
+                        else if (srcMat.txDiffuse != null) { sb.AppendFormat("map_Kd texture/{0}\r\n", srcMat.txDiffuse); }
+                        if (srcMat.txNormal != null) { sb.AppendFormat("bump texture/{0}\r\n", srcMat.txNormal); }
                         sb.Append("\r\n");
                     }
 
@@ -885,8 +885,8 @@ namespace kn5_converter
                     for (int t = 0; t < srcModel.usedTex.Count; t++)
                     {
                         string textureName = srcModel.usedTex[t].filename;
-                        string textureFile = srcModel.modelDir + "texture\\" + textureName;
-                        string relativePath = "texture\\" + textureName;
+                        string textureFile = srcModel.modelDir + "texture/" + textureName;
+                        string relativePath = "texture/" + textureName;
 
                         //search for texture if doesn't exist
                         //later
