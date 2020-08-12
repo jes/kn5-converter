@@ -1,0 +1,11 @@
+1. Install mono:
+
+    $ sudo apt install mono-complete
+
+2. Make kn5conv:
+
+    $ make
+
+3. Now you can use kn5conv to convert kn5 files into obj/fbx.
+
+    $ ./kn5conv my-kn5-file.kn5
